@@ -1,8 +1,13 @@
 <template>
   <q-page class="flex flex-center">
-    <input v-model="arrContatos[0].email"/>
+    <!--<input v-model="arrContatos[0].email"/>
+    -->
     <button @click="incluir">+</button>
-    <card-contato texto="texto" :contato="cont" v-for="cont in arrContatos" v-bind:key="cont.fone"/>
+
+    <card-contato texto="texto" :contato="cont"
+    v-for="cont in arrContatos" v-bind:key="cont.id"
+    @excluir="exclusao"
+    />
     <!--
       <input v-model="arrContatos[2].nome"/>
     <card-contato texto="contato 1" :contato="andrinel"/>
@@ -14,49 +19,34 @@
 <script>
 import { defineComponent } from 'vue'
 import CardContato from '../components/CardContato.vue'
+import services from '../services'
 
 export default defineComponent({
   components: { CardContato },
   name: 'IndexPage',
-  methods: {
-    incluir() {
-      this.arrContatos.push( {nome: "Recruta", email: "recruta@penguinsmadagascar.com", fone: "666.666"} )
-    }
-  },
+
   data(){
     return {
-      andrinel: {
-                  nome: "Andrinel Rodriguez",
-                  sobrenome: "Rodrigez",
-                  fone: "11 123155",
-                  email: "andrinel@gmail.com"
-                },
-      arrContatos: [
-                {
-                    nome: "Andrinel Rodriguez",
-                    sobrenome: "Rodrigez",
-                    fone: "11 123155",
-                    email: ""
-                },
-                {
-                    nome: "João2",
-                    sobrenome: "Silva2",
-                    fone: "55 55555.55552",
-                    email: "joaosilva2@gmail.com"
-                },
+      arrContatos: []
+    }
+  },
+  created() {
+    services.getAllContatos( (dados) =>this.arrContatos = dados )
 
-                {
-                    nome: "João3",
-                    sobrenome: "Silva",
-                    fone: "55 55555.5555",
-                    email: "joaosilva@gmail.com"
-                },
-                {
-                    nome: "João4",
-                    sobrenome: "Silva2",
-                    fone: "55 55555.552",
-                    email: "joaosilva2@gmail.com"
-                }]
+  },
+  methods:{
+    incluir() {
+      let tmp = {id: 0, nome: "Recruta", email: "recruta@penguinsmadagascar.com", fone: "666.666"}
+      services.saveContato(tmp, (dado)=> this.arrContatos.push(dado))
+      console.log(tmp)
+
+    },
+    exclusao(arg1) {
+      alert("na exlcusão "+arg1)
+      services.deleteContato(arg1)
+      let tmp = []
+      this.arrContatos = this.arrContatos.filter(cnt => cnt.id != arg1)
+
     }
   }
 })

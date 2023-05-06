@@ -14,17 +14,25 @@
     <q-separator />
     <q-card-actions vertical>
         <q-btn flat>Action 1</q-btn>
-        <q-btn flat>Action 2</q-btn>
+        <q-btn flat @click="excluir(contato.id)">Excluir</q-btn>
       </q-card-actions>
 
   </q-card>
 </template>
 
 <script>
+import servicos from 'src/services';
 export default {
   props:{
     texto: String,
     contato: Object
+  },
+  methods: {
+    excluir(id) {
+      //console.log("excluir o id: "+id)
+      this.$emit('excluir', id)
+
+    }
   }
 
 }
